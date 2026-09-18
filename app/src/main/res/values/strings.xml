@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Calendar</string>
+    <string name="screen_title">Мои задачи</string>
+    <string name="task_1">Купить продукты</string>
+    <string name="task_2">Сдать лабораторную работу</string>
+    <string name="task_3">Подготовиться к поездке в Питер</string>
+    <string name="task_4">Сходить на йогу</string>
 </resources>
