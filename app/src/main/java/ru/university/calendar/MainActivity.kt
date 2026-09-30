@@ -1,11 +1,13 @@
 package ru.university.calendar
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.util.Log
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,8 +23,27 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        val tasks = listOf(
+            Task(1, "Купить продукты", "Молоко, хлеб, яйца", "05.10.2026"),
+            Task(2, "Сдать лабораторную работу", "Курс по Android", "07.10.2026", isDone = true),
+            Task(3, "Подготовиться к поездке в Питер", "Повторить лекции 1-5", "12.10.2026"),
+            Task(4, "Сходить в йогу", "День ног", "06.10.2026")
+        )
+
+        val recyclerView: RecyclerView = findViewById(R.id.tasksRecyclerView)
+        recyclerView.adapter = TaskAdapter(tasks) { task ->
+            val intent = Intent(this, TaskDetailActivity::class.java)
+            intent.putExtra("TASK_ID", task.id)
+            startActivity(intent)
+        }
+
+        val addTaskFab = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.addTaskFab)
+        addTaskFab.setOnClickListener {
+            val intent = Intent(this, AddTaskActivity::class.java)
+            startActivity(intent)
+        }
+
         Log.d(tag, "onCreate")
-        demoKotlinBasics()
     }
 
     override fun onStart() {
@@ -53,17 +74,5 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(tag, "onDestroy")
-    }
-
-    private fun demoKotlinBasics() {
-        val appName = "Calendar"       // val: значение менять нельзя
-        var tasksCount = 4             // var: значение менять можно
-        tasksCount = tasksCount + 1
-
-        val note: String? = null       // знак ? означает, что здесь может быть null
-
-        Log.d("KotlinDemo", "appName=$appName, tasksCount=$tasksCount")
-        Log.d("KotlinDemo", "length: ${note?.length}")           // безопасный вызов ?.
-        Log.d("KotlinDemo", "length or 0: ${note?.length ?: 0}") // оператор elvis ?:
     }
 }
