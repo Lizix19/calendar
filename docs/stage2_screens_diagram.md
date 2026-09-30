@@ -2,8 +2,8 @@
 
 ```mermaid
 flowchart TD
-    A[MainActivity<br/>список задач] -->|клик по карточке задачи<br/>Intent + putExtra&#40;TASK_ID, id&#41;| B[TaskDetailActivity<br/>детали задачи]
-    A -->|клик по FAB &#40;+&#41;<br/>Intent без данных| C[AddTaskActivity<br/>добавление задачи]
+    A[MainActivity: список задач] -->|клик по карточке| B[TaskDetailActivity: детали задачи]
+    A -->|клик по FAB| C[AddTaskActivity: добавление задачи]
 ```
 
 ## Экраны
