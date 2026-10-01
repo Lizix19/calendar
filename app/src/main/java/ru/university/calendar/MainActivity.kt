@@ -4,18 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private val tag = "Lifecycle"
-    private lateinit var database: AppDatabase
     private lateinit var adapter: TaskAdapter
+
+    private val viewModel: TaskViewModel by viewModels {
+        TaskViewModelFactory(TaskRepository(AppDatabase.getDatabase(this).taskDao()))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +29,6 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        database = AppDatabase.getDatabase(this)
-
         val recyclerView: RecyclerView = findViewById(R.id.tasksRecyclerView)
         adapter = TaskAdapter(emptyList()) { task ->
             val intent = Intent(this, TaskDetailActivity::class.java)
@@ -36,6 +36,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         recyclerView.adapter = adapter
+
+        viewModel.tasks.observe(this) { tasks ->
+            adapter.updateTasks(tasks)
+            Log.d("TaskViewModel", "Список обновлён, задач: ${tasks.size}")
+        }
 
         val addTaskFab = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.addTaskFab)
         addTaskFab.setOnClickListener {
@@ -46,23 +51,14 @@ class MainActivity : AppCompatActivity() {
         Log.d(tag, "onCreate")
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadTasksFromDatabase()
-        Log.d(tag, "onResume")
-    }
-
-    private fun loadTasksFromDatabase() {
-        lifecycleScope.launch {
-            val tasksFromDb = database.taskDao().getAllTasks()
-            adapter.updateTasks(tasksFromDb)
-            Log.d("RoomTest", "Загружено задач из базы: ${tasksFromDb.size}")
-        }
-    }
-
     override fun onStart() {
         super.onStart()
         Log.d(tag, "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(tag, "onResume")
     }
 
     override fun onPause() {
