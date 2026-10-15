@@ -48,6 +48,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val testAddButton = findViewById<android.widget.Button>(R.id.testAddButton)
+        testAddButton.setOnClickListener {
+            viewModel.addTask(
+                Task(title = "Проверочная задача", description = "Добавлена для проверки Room", date = "13.10.2026")
+            )
+            Log.d("RoomTest", "Вызван viewModel.addTask() — проверка вставки в базу")
+        }
+
         Log.d(tag, "onCreate")
     }
 
